@@ -19,7 +19,8 @@
         'DE', 'DA', 'DI', 'LA', 'DU', 'DEL', 'DEI', 'VDA', 'DELLO', 'DELLA',
         'DEGLI', 'DELLE', 'VAN', 'VON', 'DER', 'DEN', 'HEER', 'TEN', 'TER',
         'VANDE', 'VANDEN', 'VANDER', 'VOOR', 'VER', 'AAN', 'MC', 'BEN', 'SAN',
-        'SAINZ', 'BIN', 'LI', 'LE', 'DES', 'AM', 'AUS\'M', 'VOM', 'ZUM', 'ZUR', 'TEN', 'IBN'
+        'SAINZ', 'BIN', 'LI', 'LE', 'DES', 'AM', 'AUS\'M', 'VOM', 'ZUM', 'ZUR', 'TEN', 'IBN',
+        'ST', 'SAINT'
     ]);
 
     const NON_NAME = new Set(['AKA', 'FKA', 'NKA', 'FICTITIOUS']);

@@ -354,14 +354,76 @@ describe('NameParts.js', function() {
             expect(nameParts.lastName).toBe('Bush');
         });
 
+        it('should parse a name with a last name prefix of "Saint" or "St"', function() {
+            var nameParts = NameParts.parse('Michael St. James III');
+
+            // Parse results
+            expect(nameParts.firstName).toBe('Michael');
+            expect(nameParts.lastName).toBe('St James');
+            expect(nameParts.generation).toBe('III');
+
+            // Members not used for this result
+            expect(nameParts.salutation).toBeNull();
+            expect(nameParts.middleName).toBeNull();
+            expect(nameParts.suffix).toBeNull();
+            expect(nameParts.aliases).toBeNull();
+
+            // Flags
+            expect(nameParts.hasCorporateEntity).toBe(false);
+            expect(nameParts.hasNonName).toBe(false);
+            expect(nameParts.hasLnPrefix).toBe(true);
+            expect(nameParts.hasSupplementalInfo).toBe(false);
+
+            // Same test, but this time with "Saint" instead of "St"
+            var nameParts = NameParts.parse('Michael Saint James III');
+            expect(nameParts.firstName).toBe('Michael');
+            expect(nameParts.lastName).toBe('Saint James');
+            expect(nameParts.generation).toBe('III');
+        });
+
+        /*
+        xit("should parse a Saint's name", function() {
+            var nameParts = NameParts.parse('St. Francis of Assisi');
+
+            // Parse results
+            expect(nameParts.salutation).toBe('St');
+            expect(nameParts.firstName).toBe('Francis');
+            expect(nameParts.hasNonName).toBe(true);
+            expect(nameParts.aliases[0]).toBe('Assisi');
+
+            // Members not used for this result
+            expect(nameParts.lastName).toBeNull();
+            expect(nameParts.generation).toBeNull();
+            expect(nameParts.middleName).toBeNull();
+            expect(nameParts.suffix).toBeNull();
+
+            // Flags
+            expect(nameParts.hasCorporateEntity).toBe(false);
+            expect(nameParts.hasLnPrefix).toBe(false);
+            expect(nameParts.hasSupplementalInfo).toBe(false);
+        });
+        */
+
         /*
         xit('should parse a name with extraneous information', function() {
             //John Doe fictitious husband of Jane Doe
         });
         */
 
-        //Saleh ibn Tariq ibn Khalid al-Fulan
-        // first = Saleh
-        // last = everything-else
+        /*
+        xit('should parse a name an Arabic name', function() {
+            var nameParts = NameParts.parse('Saleh ibn Tariq ibn Khalid al-Fulan');
+            except(nameParts.firstName).toBe('Saleh');
+            except(nameParts.childOf[0]).toBe('Tariq'); // TODO: needs to be implemented
+            except(nameParts.childOf[0]).toBe('Khalid'); // TODO: needs to be implemented
+            except(nameParts.lastName).toBe('Fulan'); // or is it "al-Fulan"?
+
+            // Notes
+            // ibn, bin, bint = "son of"
+            // ibnat, bint, bte. = "daughter of"
+            // abu = "father of"
+            // umm = "mother of"
+        });
+        */
     });
 });

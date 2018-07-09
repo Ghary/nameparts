@@ -20,7 +20,7 @@
         'DEGLI', 'DELLE', 'VAN', 'VON', 'DER', 'DEN', 'HEER', 'TEN', 'TER',
         'VANDE', 'VANDEN', 'VANDER', 'VOOR', 'VER', 'AAN', 'MC', 'BEN', 'SAN',
         'SAINZ', 'BIN', 'LI', 'LE', 'DES', 'AM', 'AUS\'M', 'VOM', 'ZUM', 'ZUR', 'TEN', 'IBN',
-        'ST', 'SAINT'
+        'ST', 'SAINT', '\'O', 'O\''
     ]);
 
     const NON_NAME = new Set(['AKA', 'FKA', 'NKA', 'FICTITIOUS']);
@@ -100,23 +100,28 @@
                 if (output.hasLnPrefix === true) {
                     namePieces[namePiecesIndex] += ' ' + namePieces[namePiecesIndex + 1];
                     namePieces.splice(namePiecesIndex + 1, 1);
+                    namePiecesIndex++;
+                    continue;
                 }
             }
 
             // Is a non-name piece?
             let namePieceIsNonName = false;
+            // TODO: This doesn't handle the situation where the quote may not be the first character
             if (namePiece.indexOf('\'') === 0 || namePiece.indexOf('"') === 0) {
-                // TODO - Match only the correct apostrophe
-                // TODO - Don't modify namePieces unless we know for sure we have a matching end apostrophe,
-                //        otherwise we have another situation, not a non-name
-                while (
-                    !(
-                        namePiece.substring(namePiece.length - 1) === '\'' ||
-                        namePiece.substring(namePiece.length - 1) === '"'
-                    )
-                ) {
+                const quote = namePiece[0];
+                while (namePiece[namePiece.length - 1] !== quote) {
                     namePieces[namePiecesIndex] += ' ' + namePieces[namePiecesIndex + 1];
                     namePieces.splice(namePiecesIndex + 1, 1);
+
+                    // Is there a terminating quote else in `namePiece`?
+                    const lastIndexOfQuote = namePiece.lastIndexOf(quote);
+                    if (lastIndexOfQuote > 0) {
+                        const pieceToExtract = namePieces[namePiecesIndex].substring(lastIndexOfQuote + 1);
+                        namePieces.splice(namePiecesIndex + 1, 0, ...pieceToExtract.split(' '));
+                        namePieces[namePiecesIndex] = namePiece.substring(0, lastIndexOfQuote + 1);
+                    }
+
                     namePiece = namePieces[namePiecesIndex];
                 }
                 output.hasNonName = true;

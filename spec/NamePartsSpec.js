@@ -382,7 +382,7 @@ describe('NameParts.js', function() {
         });
 
         /*
-        xit("should parse a Saint's name", function() {
+        xit('should parse a Saint's name', function() {
             var nameParts = NameParts.parse('St. Francis of Assisi');
 
             // Parse results
@@ -413,10 +413,10 @@ describe('NameParts.js', function() {
         /*
         xit('should parse a name an Arabic name', function() {
             var nameParts = NameParts.parse('Saleh ibn Tariq ibn Khalid al-Fulan');
-            except(nameParts.firstName).toBe('Saleh');
-            except(nameParts.childOf[0]).toBe('Tariq'); // TODO: needs to be implemented
-            except(nameParts.childOf[0]).toBe('Khalid'); // TODO: needs to be implemented
-            except(nameParts.lastName).toBe('Fulan'); // or is it "al-Fulan"?
+            expect(nameParts.firstName).toBe('Saleh');
+            expect(nameParts.childOf[0]).toBe('Tariq'); // TODO: needs to be implemented
+            expect(nameParts.childOf[0]).toBe('Khalid'); // TODO: needs to be implemented
+            expect(nameParts.lastName).toBe('Fulan'); // or is it "al-Fulan"?
 
             // Notes
             // ibn, bin, bint = "son of"
@@ -425,5 +425,67 @@ describe('NameParts.js', function() {
             // umm = "mother of"
         });
         */
+
+        it('Should handle unterminated quotes in a name', function() {
+            var nameParts = NameParts.parse('John \'o Doe');
+            expect(nameParts.firstName).toBe('John');
+            expect(nameParts.lastName).toBe('\'o Doe');
+        });
+
+        it('should parse a name with a middle name then alias afterwards', function() {
+            var nameParts = NameParts.parse('Neil Patrick "NPH" Harris');
+
+            // Parse results
+            expect(nameParts.fullName).toBe('Neil Patrick "NPH" Harris');
+            expect(nameParts.firstName).toBe('Neil');
+            expect(nameParts.middleName).toBe('Patrick');
+            expect(nameParts.lastName).toBe('Harris');
+            expect(nameParts.hasNonName).toBe(true);
+            expect(nameParts.aliases.length).toBe(1);
+            expect(nameParts.aliases[0]).toBe('NPH');
+
+
+            // Members not used for this result
+            expect(nameParts.salutation).toBeNull();
+            expect(nameParts.generation).toBeNull();
+            expect(nameParts.suffix).toBeNull();
+
+            // Flags
+            expect(nameParts.hasCorporateEntity).toBe(false);
+            expect(nameParts.hasLnPrefix).toBe(false);
+            expect(nameParts.hasSupplementalInfo).toBe(false);
+        });
+
+        it('should parse a name with an alias then middle name afterwards', function() {
+            var nameParts = NameParts.parse('Neil "NPH" Patrick Harris');
+
+            // Parse results
+            expect(nameParts.fullName).toBe('Neil "NPH" Patrick Harris');
+            expect(nameParts.firstName).toBe('Neil');
+            expect(nameParts.middleName).toBe('Patrick');
+            expect(nameParts.lastName).toBe('Harris');
+            expect(nameParts.hasNonName).toBe(true);
+            expect(nameParts.aliases.length).toBe(1);
+            expect(nameParts.aliases[0]).toBe('NPH');
+
+
+            // Members not used for this result
+            expect(nameParts.salutation).toBeNull();
+            expect(nameParts.generation).toBeNull();
+            expect(nameParts.suffix).toBeNull();
+
+            // Flags
+            expect(nameParts.hasCorporateEntity).toBe(false);
+            expect(nameParts.hasLnPrefix).toBe(false);
+            expect(nameParts.hasSupplementalInfo).toBe(false);
+        });
+
+        it('should handle incorrect spacing with quotes', function() {
+            var nameParts = NameParts.parse('Quotes "And"Ã¢â‚¬â€¹ Spaces');
+            expect(nameParts.firstName).toBe('Quotes');
+            expect(nameParts.lastName).toBe('Spaces');
+            expect(nameParts.aliases.length).toBe(1);
+            expect(nameParts.aliases[0]).toBe('And');
+        });
     });
 });

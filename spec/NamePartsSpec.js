@@ -381,8 +381,7 @@ describe('NameParts.js', function() {
             expect(nameParts.generation).toBe('III');
         });
 
-        /*
-        xit('should parse a Saint's name', function() {
+        xit('should parse a Saint\'s name', function() {
             var nameParts = NameParts.parse('St. Francis of Assisi');
 
             // Parse results
@@ -402,15 +401,11 @@ describe('NameParts.js', function() {
             expect(nameParts.hasLnPrefix).toBe(false);
             expect(nameParts.hasSupplementalInfo).toBe(false);
         });
-        */
 
-        /*
         xit('should parse a name with extraneous information', function() {
             //John Doe fictitious husband of Jane Doe
         });
-        */
 
-        /*
         xit('should parse a name an Arabic name', function() {
             var nameParts = NameParts.parse('Saleh ibn Tariq ibn Khalid al-Fulan');
             expect(nameParts.firstName).toBe('Saleh');
@@ -424,7 +419,6 @@ describe('NameParts.js', function() {
             // abu = "father of"
             // umm = "mother of"
         });
-        */
 
         it('Should handle unterminated quotes in a name', function() {
             var nameParts = NameParts.parse('John \'o Doe');
@@ -480,12 +474,24 @@ describe('NameParts.js', function() {
             expect(nameParts.hasSupplementalInfo).toBe(false);
         });
 
+        // GitHub Issue #5
         it('should handle incorrect spacing with quotes', function() {
             var nameParts = NameParts.parse('Quotes "And"Ã¢â‚¬â€¹ Spaces');
             expect(nameParts.firstName).toBe('Quotes');
             expect(nameParts.lastName).toBe('Spaces');
             expect(nameParts.aliases.length).toBe(1);
             expect(nameParts.aliases[0]).toBe('And');
+        });
+
+        // GitHub Issue #6
+        it('should handle an unterminated double quote in a name', function() {
+            var nameParts = NameParts.parse('John P. "Typo Doe Sr.');
+            expect(nameParts.firstName).toBe('John');
+            expect(nameParts.middleName).toBe('P');
+            expect(nameParts.aliases.length).toBe(1);
+            expect(nameParts.aliases[0]).toBe('Typo');
+            expect(nameParts.lastName).toBe('Doe');
+            expect(nameParts.generation).toBe('Sr');
         });
     });
 });

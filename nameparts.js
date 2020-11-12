@@ -107,23 +107,40 @@
 
             // Is a non-name piece?
             let namePieceIsNonName = false;
-            // TODO: This doesn't handle the situation where the quote may not be the first character
+            // TODO: This doesn't handle the situation where the quote may not be the first or last character
             if (namePiece.indexOf('\'') === 0 || namePiece.indexOf('"') === 0) {
                 const quote = namePiece[0];
-                while (namePiece[namePiece.length - 1] !== quote) {
-                    namePieces[namePiecesIndex] += ' ' + namePieces[namePiecesIndex + 1];
-                    namePieces.splice(namePiecesIndex + 1, 1);
 
-                    // Is there a terminating quote else in `namePiece`?
-                    const lastIndexOfQuote = namePiece.lastIndexOf(quote);
-                    if (lastIndexOfQuote > 0) {
-                        const pieceToExtract = namePieces[namePiecesIndex].substring(lastIndexOfQuote + 1);
-                        namePieces.splice(namePiecesIndex + 1, 0, ...pieceToExtract.split(' '));
-                        namePieces[namePiecesIndex] = namePiece.substring(0, lastIndexOfQuote + 1);
+                // Look for the closing quote before we go and mutate the array
+                // NOTE: This hurts performance, this will need fixing
+                let foundClosingQuotes = false;
+                for (let forwardIndex = namePiecesIndex; forwardIndex < namePieces.length; forwardIndex++) {
+                    foundClosingQuotes = namePieces[forwardIndex].lastIndexOf(quote) > 0;
+                    if (foundClosingQuotes) {
+                        break
                     }
-
-                    namePiece = namePieces[namePiecesIndex];
                 }
+
+                if (foundClosingQuotes) {
+                    while (namePiece[namePiece.length - 1] !== quote) {
+                        namePieces[namePiecesIndex] += ' ' + namePieces[namePiecesIndex + 1];
+                        namePieces.splice(namePiecesIndex + 1, 1);
+
+                        // Is there a terminating quote else in `namePiece`?
+                        const lastIndexOfQuote = namePiece.lastIndexOf(quote);
+                        if (lastIndexOfQuote > 0) {
+                            const pieceToExtract = namePieces[namePiecesIndex].substring(lastIndexOfQuote + 1);
+                            namePieces.splice(namePiecesIndex + 1, 0, ...pieceToExtract.split(' '));
+                            namePieces[namePiecesIndex] = namePiece.substring(0, lastIndexOfQuote + 1);
+                        }
+
+                        namePiece = namePieces[namePiecesIndex];
+                    }
+                } else {
+                    // Put a quote at the end since it'll get removed in few lines anyway
+                    namePiece += quote;
+                }
+
                 output.hasNonName = true;
                 namePieceIsNonName = true;
                 namePiece = namePiece.substring(1, namePiece.length - 1);

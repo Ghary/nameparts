@@ -1,0 +1,16 @@
+{
+  "extends": "@tsconfig/recommended/tsconfig.json",
+
+  "compilerOptions": {
+    "declaration": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "outDir": "./",
+    "removeComments": true,
+    "rootDir": "./src/",
+    "strict": true
+  },
+
+  "includes": ["./src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts", "single-run.ts"]
+}

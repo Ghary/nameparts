@@ -1,3 +1,10 @@
 .DS_Store
+.gitignore
+.npmrc
+.travis.yml
+.vscode
 node_modules
 spec
+src
+single-run.*
+tsconfig.json

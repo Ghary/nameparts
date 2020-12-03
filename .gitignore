@@ -1,4 +1,8 @@
 .DS_Store
 .vscode
 node_modules
-single-run.js
+single-run.*
+*.d.ts
+constants.js
+nameparts.js
+*.tgz
